@@ -29,3 +29,6 @@ make install
 
 - The [MVMO home page](https://www.uni-due.de/mvmo/)
 - [Mean Variance Mapping Optimization](https://www.uni-due.de/imperia/md/content/mvmo/background_mvmo.pdf)
+- Erlich, István, et al. "Solving the IEEE-CEC 2014 expensive optimization test
+  problems by using single-particle MVMO." Evolutionary Computation (CEC), 2014
+  IEEE Congress on. IEEE, 2014.
