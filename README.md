@@ -8,11 +8,18 @@ black-box single-objective optimization competition.
 
 ## Dependency
 
-- TODO
+- CMake for compiling 
+- Eigen for matrix operations
+- Nlopt for local search
 
 ## Install 
 
-- TODO
+```bash
+mkdir -p build
+cd build
+cmake .. -DCMAKE_INSTALL_PREFIX=/path/of/installation -DEigen3_DIR=/path/of/Eigen/share/eigen3/cmake -DNLOPT_PATH=/path/to/nlopt
+make install
+```
 
 ## DEMO
 
