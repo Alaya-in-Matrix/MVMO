@@ -90,12 +90,14 @@ void MVMO::optimize_one_step()
     const size_t m               = _m();
     vector<size_t> dim_to_mutate = _pick_from_seq(_dim, m);
     VectorXd new_x               = _scale(_best_x);
+#ifdef MYDEBUG
     cout << "Eval: " << _eval_counter << endl;
     cout << "FS:   " << _fshape << endl;
     cout << "Besty: " << _best_y << endl;
     cout << _archive_x << endl;
     cout << "ArchS: " << _archive_s.transpose() << endl;
     cout << "ArchD: " << _archive_d.transpose() << endl;
+#endif
     for(size_t idx : dim_to_mutate)
     {
         double xbar   = _archive_mean(idx);
@@ -107,6 +109,7 @@ void MVMO::optimize_one_step()
         double h1     = _hfunc(xbar, s1, s2, 1);
         new_x(idx)    = hx + (1.0 - h1 + h0) * x_star - h0;
 
+#ifdef MYDEBUG
         cout << "\tidx    :" << idx    << endl;
         cout << "\txbar   :" << xbar   << endl;
         cout << "\ts      :" << _archive_s(idx)     << endl;
@@ -119,12 +122,15 @@ void MVMO::optimize_one_step()
         cout << "\th1     :" << h1     << endl;
         cout << "\tnew_x(idx): " << new_x(idx) << endl;
         cout << "\t----------"   << endl;
+#endif
 
     }
-    cout << "new_x: " << new_x.transpose() << endl;
     double y = _run_func(new_x);
+#ifdef MYDEBUG
+    cout << "new_x: " << new_x.transpose() << endl;
     cout << "new_y: " << y << endl;
     cout << "================" << endl;
+#endif
 }
 void MVMO::_fs()
 {
@@ -179,8 +185,9 @@ void MVMO::_archive()
     for(size_t i = 0; i < _dim; ++i)
     {
         const RowVectorXd variables = _archive_x.row(i);
-        const double mean           = variables.mean();
-        const double var            = (variables.array() - mean).square().sum() / _archive_size;
+        const Vector2d    mean_var  = _mean_var_noeq(variables);
+        const double mean           = mean_var(0);
+        const double var            = mean_var(1);
         const double s              = var == 0 ? _archive_s(i) : -1 * log(var) * fs;
         _archive_mean(i)            = mean;
         _archive_s(i)               = s;
@@ -238,4 +245,48 @@ Eigen::VectorXd MVMO::_scale_back(const Eigen::VectorXd& x) const  // scale from
     VectorXd b = _lb;
     VectorXd a = _ub - _lb;
     return a.cwiseProduct(x) + b;
+}
+Vector2d MVMO::_mean_var_noeq(const RowVectorXd& xs) const
+{
+    double mean, var;
+    vector<double> v(xs.size());
+    for(size_t i = 0; i <  v.size(); ++i)
+        v[i] = xs[i];
+    std::sort(v.begin(), v.end());
+    vector<double> vnoeq{v[0]};
+    for(size_t i = 1; i < v.size(); ++i)
+    {
+        if(abs(v[i] - v[i-1]) > 1e-70)
+            vnoeq.push_back(v[i]);
+    }
+
+    cout << "Size of vnoeq: " << vnoeq.size() << ", variables: " << _convert(vnoeq).transpose() << endl;
+    if(vnoeq.size() == 1)
+    {
+        mean = vnoeq[0];
+        var  = 0.0;
+    }
+    else
+    {
+        VectorXd vec = _convert(vnoeq);
+        mean         = vec.mean();
+        var          = (vec.array() - mean).array().square().mean();
+    }
+    Vector2d mean_var;
+    mean_var << mean, var;
+    return mean_var;
+}
+Eigen::VectorXd MVMO::_convert(std::vector<double>& x) const 
+{
+    VectorXd v(x.size());
+    for(size_t i = 0; i < x.size(); ++i)
+        v[i] = x[i];
+    return v;
+}
+std::vector<double> MVMO::_convert(Eigen::VectorXd& v) const
+{
+    vector<double> x(v.size());
+    for(size_t i = 0; i < x.size(); ++i)
+        x[i] = v[i];
+    return x;
 }

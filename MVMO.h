@@ -61,8 +61,8 @@ protected:
     
     Eigen::VectorXd _scale(const Eigen::VectorXd&) const;       // scale from [lb, ub] to [0, 1]
     Eigen::VectorXd _scale_back(const Eigen::VectorXd&) const;  // scale from [0, 1] to [lb, ub]
-    // Eigen::VectorXd     _convert(std::vector<double>&) const;
-    // std::vector<double> _convert(Eigen::VectorXd&) const;
+    Eigen::VectorXd     _convert(std::vector<double>&) const;
+    std::vector<double> _convert(Eigen::VectorXd&) const;
 
     double _run_func(const Eigen::VectorXd& x);            // wrapper of the original objective function
     Eigen:: VectorXd _run_func_batch(const Eigen::MatrixXd& xs);            // wrapper of the original objective function
@@ -77,6 +77,7 @@ protected:
     std::vector<size_t> _pick_from_seq(size_t, size_t);
     double _rand01();
     double _hfunc(double xbar, double s1, double s2, double x) const;
+    Eigen::Vector2d _mean_var_noeq(const Eigen::RowVectorXd& xs) const;
 
 private:
     MVMO_Obj _f;
