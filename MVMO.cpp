@@ -109,6 +109,12 @@ void MVMO::optimize_one_step()
         double h1     = _hfunc(xbar, s1, s2, 1);
         new_x(idx)    = hx + (1.0 - h1 + h0) * x_star - h0;
 
+        // XXX: not in the paper, but in ref.m(line 348-355)
+        if(new_x(idx)  > 0.98 and _rand01() < 0.2)
+            new_x(idx) = 1.0;
+        else if(new_x(idx) < 0.02 and _rand01() < 0.2)
+            new_x(idx) = 0.0;
+
 #ifdef MYDEBUG
         cout << "\tidx    :" << idx    << endl;
         cout << "\txbar   :" << xbar   << endl;
