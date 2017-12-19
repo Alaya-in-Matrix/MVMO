@@ -8,6 +8,7 @@ public:
     // TODO: Support constrained optimization
     typedef std::function<double(const Eigen::VectorXd&)> MVMO_Obj;
     MVMO(MVMO_Obj f, const Eigen::VectorXd& lb, const Eigen::VectorXd& ub);
+    void optimize(const Eigen::MatrixXd& guess);
     void optimize();
     void optimize_one_step(); 
     Eigen::VectorXd best_x() const;
@@ -69,6 +70,7 @@ protected:
     void _default_setting();
     void _init_archive();
     void _initialize();
+    void _initialize(const Eigen::MatrixXd& guess);
     void   _fs();
     double _m();
     std::vector<size_t> _seq_idx(size_t) const;

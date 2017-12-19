@@ -19,7 +19,7 @@ void MVMO::_default_setting()
     _max_eval     = _dim * 50;
     _num_init     = _dim * 5;
     _archive_size = 5;
-    _fs_init      = 0.1;
+    _fs_init      = 0.5;
     _fs_final     = 20;
     _m_init       = static_cast<size_t>(std::max(1.0, _dim / 6.0));
     _m_final      = static_cast<size_t>(std::max(1.0, _dim / 2.0));
@@ -75,6 +75,20 @@ void MVMO::optimize()
         optimize_one_step();
     }
 }
+void MVMO::optimize(const MatrixXd& guess)
+{
+#ifdef RAND_SEED
+    srand(RAND_SEED);
+#else
+    srand(random_device{}());
+#endif
+    _init_archive();
+    _initialize(guess);
+    while(_eval_counter < _max_eval)
+    {
+        optimize_one_step();
+    }
+}
 void MVMO::_initialize()
 {
     if(_num_init < _archive_size)
@@ -82,6 +96,21 @@ void MVMO::_initialize()
     MatrixXd init_x = MatrixXd(_dim, _num_init);
     init_x.setRandom();
     init_x = 0.5 * (init_x.array() + 1.0);
+    _run_func_batch(init_x);
+}
+void MVMO::_initialize(const MatrixXd& guess)
+{
+    if(_num_init < _archive_size)
+        _num_init = _archive_size;
+    if(_num_init < (size_t)guess.cols())
+        _num_init = guess.cols();
+    MatrixXd scaled_guess(_dim, guess.cols());
+    for(long i = 0; i < guess.cols(); ++i)
+        scaled_guess.col(i) = _scale(guess.col(i));
+    MatrixXd init_x = MatrixXd(_dim, _num_init);
+    init_x.setRandom();
+    init_x = 0.5 * (init_x.array() + 1.0);
+    init_x.leftCols(scaled_guess.cols()) = scaled_guess;
     _run_func_batch(init_x);
 }
 void MVMO::optimize_one_step()
