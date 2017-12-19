@@ -260,7 +260,6 @@ Vector2d MVMO::_mean_var_noeq(const RowVectorXd& xs) const
             vnoeq.push_back(v[i]);
     }
 
-    cout << "Size of vnoeq: " << vnoeq.size() << ", variables: " << _convert(vnoeq).transpose() << endl;
     if(vnoeq.size() == 1)
     {
         mean = vnoeq[0];
