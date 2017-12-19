@@ -25,6 +25,27 @@ double rosenbrock(const VectorXd& xs)
     return pow(a - x1, 2) + b * pow(x2 - x1 * x1, 2);
 }
 
+double ackley(const VectorXd& xs_)
+{
+    VectorXd xs = xs_;
+    for(long i = 0; i < xs.size(); ++i)
+        xs(i) -= i;
+    const double a = 20;
+    const double b = 0.2;
+    const double c = 2 * M_PI;
+    double sum1 = 0, sum2 = 0;
+    for(long i = 0; i < xs.size(); ++i)
+    {
+        const double xi = xs(i);
+        sum1 += pow(xi, 2);
+        sum2 += cos(c * xi);
+    }
+    const double term1 = -1 * a * exp(-b * sqrt(sum1 / xs.size()));
+    const double term2 = -1 * exp(sum2 / xs.size());
+    const double y     = term1 + term2 + a + exp(1);
+    return y;
+}
+
 // double cec14(const VectorXd& xs)
 // {
 //     ofstream param("./circuit/param");
@@ -44,19 +65,20 @@ double rosenbrock(const VectorXd& xs)
 
 int main(int args_num, char** args)
 {
-    size_t dim      = 2;
+    size_t dim      = 6;
     size_t num_eval = dim * 50;
     cout << setprecision(18);
     if(args_num > 1)
         num_eval = atoi(args[1]);
-    const VectorXd lb = VectorXd::Constant(dim, 1, -10);
-    const VectorXd ub = VectorXd::Constant(dim, 1, 10);
-    MVMO optimizer(rosenbrock, lb, ub);
+    const VectorXd lb = VectorXd::Constant(dim, 1, -32);
+    const VectorXd ub = VectorXd::Constant(dim, 1, 32);
+    MVMO optimizer(ackley, lb, ub);
     optimizer.set_archive_size(25);
     optimizer.set_max_eval(num_eval);
     optimizer.set_fs_init(0.5);
     optimizer.set_fs_final(20);
     optimizer.optimize();
-    cout << optimizer.best_y() << endl;
+    cout << "BestX: " << optimizer.best_x().transpose() << endl;
+    cout << "BestY: " << optimizer.best_y() << endl;
     return EXIT_SUCCESS;
 }
