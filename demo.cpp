@@ -46,6 +46,7 @@ int main(int args_num, char** args)
 {
     size_t dim      = 2;
     size_t num_eval = dim * 50;
+    cout << setprecision(18);
     if(args_num > 1)
         num_eval = atoi(args[1]);
     const VectorXd lb = VectorXd::Constant(dim, 1, -10);

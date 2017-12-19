@@ -188,7 +188,7 @@ void MVMO::_archive()
         const Vector2d    mean_var  = _mean_var_noeq(variables);
         const double mean           = mean_var(0);
         const double var            = mean_var(1);
-        const double s              = var == 0 ? _archive_s(i) : -1 * log(var) * fs;
+        const double s              = var < numeric_limits<double>::epsilon() ? _archive_s(i) : -1 * log(var) * fs;
         _archive_mean(i)            = mean;
         _archive_s(i)               = s;
         double s1= s, s2 = s;
@@ -256,7 +256,7 @@ Vector2d MVMO::_mean_var_noeq(const RowVectorXd& xs) const
     vector<double> vnoeq{v[0]};
     for(size_t i = 1; i < v.size(); ++i)
     {
-        if(abs(v[i] - v[i-1]) > 1e-70)
+        if(abs(v[i] - v[i-1]) > std::numeric_limits<double>::epsilon())
             vnoeq.push_back(v[i]);
     }
 
