@@ -73,6 +73,7 @@ int main(int args_num, char** args)
     const VectorXd lb = VectorXd::Constant(dim, 1, -32);
     const VectorXd ub = VectorXd::Constant(dim, 1, 32);
     MVMO optimizer(ackley, lb, ub);
+    // these settings are optional
     optimizer.set_archive_size(25);
     optimizer.set_max_eval(num_eval);
     optimizer.set_fs_init(0.5);
