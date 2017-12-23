@@ -115,6 +115,8 @@ void MVMO::_initialize(const MatrixXd& guess)
 }
 void MVMO::optimize_one_step()
 {
+    if(std::isinf(_best_y))
+        _best_x = _scale_back(_dbx.col(0));
     _archive();
     const size_t m               = _m();
     vector<size_t> dim_to_mutate = _pick_from_seq(_dim, m);
