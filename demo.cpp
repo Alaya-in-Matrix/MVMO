@@ -46,6 +46,30 @@ double ackley(const VectorXd& xs_)
     return y;
 }
 
+double shekel(const Vector4d& v)
+{
+    const size_t m = 10;
+    VectorXd b(10);
+    b << 1, 2, 2, 4, 4, 6, 3, 7, 5, 5;
+    b *= 0.1;
+    MatrixXd c(4, 10);
+    c  << 4.0, 1.0, 8.0, 6.0, 3.0, 2.0, 5.0, 8.0, 6.0, 7.0, 
+          4.0, 1.0, 8.0, 6.0, 7.0, 9.0, 3.0, 1.0, 2.0, 3.6, 
+          4.0, 1.0, 8.0, 6.0, 3.0, 2.0, 5.0, 8.0, 6.0, 7.0, 
+          4.0, 1.0, 8.0, 6.0, 7.0, 9.0, 3.0, 1.0, 2.0, 3.6;
+    double outer = 0.0;
+    for(size_t i = 0; i < m; ++i)
+    {
+        double inner = 0;
+        for(size_t j = 0; j < 4; ++j)
+        {
+            inner += pow(v(j) - c(j, i), 2);
+        }
+        outer += 1/(inner+b(i));
+    }
+    return -1 * outer;
+}
+
 // double cec14(const VectorXd& xs)
 // {
 //     ofstream param("./circuit/param");
@@ -65,14 +89,14 @@ double ackley(const VectorXd& xs_)
 
 int main(int args_num, char** args)
 {
-    size_t dim      = 6;
+    size_t dim      = 4;
     size_t num_eval = dim * 50;
     cout << setprecision(18);
     if(args_num > 1)
         num_eval = atoi(args[1]);
-    const VectorXd lb = VectorXd::Constant(dim, 1, -32);
-    const VectorXd ub = VectorXd::Constant(dim, 1, 32);
-    MVMO optimizer(ackley, lb, ub);
+    const VectorXd lb = VectorXd::Constant(dim, 1, 0);
+    const VectorXd ub = VectorXd::Constant(dim, 1, 10);
+    MVMO optimizer(shekel, lb, ub);
     // these settings are optional
     optimizer.set_archive_size(25);
     optimizer.set_max_eval(num_eval);
