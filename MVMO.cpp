@@ -247,8 +247,8 @@ void MVMO::_archive()
                 s2 = s;
             }
         }
-        _archive_s1(i) = s1;
-        _archive_s2(i) = s2;
+        _archive_s1(i) = std::isfinite(_best_y) ? s1 : 0.0;
+        _archive_s2(i) = std::isfinite(_best_y) ? s2 : 0.0;
     }
 }
 std::vector<size_t> MVMO::_pick_from_seq(size_t n, size_t m)
