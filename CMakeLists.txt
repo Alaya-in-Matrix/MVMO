@@ -22,8 +22,8 @@ target_link_libraries(${DEMO_EXE} ${MVMO_LIB})
 set_property(TARGET ${MVMO_LIB} ${DEMO_EXE} PROPERTY CXX_STANDARD 11)
 
 # debug macro
-option(MYDEBUG "Debug macro for optimizer" OFF)
-if(MYDEBUG)
+option(MVMO_DEBUG "Debug macro for optimizer" OFF)
+if(MVMO_DEBUG)
     message(STATUS "Open debug marcro")
     add_definitions(-DMYDEBUG)
     if(DEFINED RAND_SEED)
