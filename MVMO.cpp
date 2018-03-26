@@ -63,8 +63,8 @@ VectorXd MVMO::_run_func_batch(const Eigen::MatrixXd& xs)            // wrapper 
 }
 void MVMO::optimize()
 {
-#ifdef RAND_SEED
-    srand(RAND_SEED);
+#ifdef DEBUG_RAND_SEED
+    srand(DEBUG_RAND_SEED);
 #else
     srand(random_device{}());
 #endif
@@ -77,8 +77,8 @@ void MVMO::optimize()
 }
 void MVMO::optimize(const MatrixXd& guess)
 {
-#ifdef RAND_SEED
-    srand(RAND_SEED);
+#ifdef DEBUG_RAND_SEED
+    srand(DEBUG_RAND_SEED);
 #else
     srand(random_device{}());
 #endif
