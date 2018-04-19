@@ -63,8 +63,8 @@ VectorXd MVMO::_run_func_batch(const Eigen::MatrixXd& xs)            // wrapper 
 }
 void MVMO::optimize()
 {
-#ifdef RAND_SEED
-    srand(RAND_SEED);
+#ifdef DEBUG_RAND_SEED
+    srand(DEBUG_RAND_SEED);
 #else
     srand(random_device{}());
 #endif
@@ -77,8 +77,8 @@ void MVMO::optimize()
 }
 void MVMO::optimize(const MatrixXd& guess)
 {
-#ifdef RAND_SEED
-    srand(RAND_SEED);
+#ifdef DEBUG_RAND_SEED
+    srand(DEBUG_RAND_SEED);
 #else
     srand(random_device{}());
 #endif
@@ -121,7 +121,7 @@ void MVMO::optimize_one_step()
     const size_t m               = _m();
     vector<size_t> dim_to_mutate = _pick_from_seq(_dim, m);
     VectorXd new_x               = _scale(_best_x);
-#ifdef MYDEBUG
+#ifdef MVMO_DEBUG
     cout << "Eval: " << _eval_counter << endl;
     cout << "FS:   " << _fshape << endl;
     cout << "Besty: " << _best_y << endl;
@@ -146,7 +146,7 @@ void MVMO::optimize_one_step()
         else if(new_x(idx) < 0.02 and _rand01() < 0.2)
             new_x(idx) = 0.0;
 
-#ifdef MYDEBUG
+#ifdef MVMO_DEBUG
         cout << "\tidx    :" << idx    << endl;
         cout << "\txbar   :" << xbar   << endl;
         cout << "\ts      :" << _archive_s(idx)     << endl;
@@ -163,7 +163,7 @@ void MVMO::optimize_one_step()
 
     }
     double y = _run_func(new_x);
-#ifdef MYDEBUG
+#ifdef MVMO_DEBUG
     cout << "new_x: " << new_x.transpose() << endl;
     cout << "new_y: " << y << endl;
     cout << "================" << endl;

@@ -51,8 +51,8 @@ protected:
     Eigen::VectorXd _archive_s1;
     Eigen::VectorXd _archive_s2;
 
-#ifdef RAND_SEED
-    std::mt19937_64 _engine = std::mt19937_64(RAND_SEED);
+#ifdef DEBUG_RAND_SEED
+    std::mt19937_64 _engine = std::mt19937_64(DEBUG_RAND_SEED);
 #else
     std::mt19937_64 _engine = std::mt19937_64(std::random_device{}());
 #endif
